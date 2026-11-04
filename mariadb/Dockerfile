@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM golang:1.27.2-bookworm AS gosu-builder
+FROM golang:1.27.3-bookworm AS gosu-builder
 
 RUN CGO_ENABLED=0 go install -trimpath -ldflags="-s -w" github.com/tianon/gosu@1.19
 
