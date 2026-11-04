@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 # ASP.NET Core 10 Runtime
 
 ![Docker Hub](https://img.shields.io/badge/image-lzocateli%2Fdotnet--aspnet-2496ED?logo=docker&logoColor=white)
-![Version](https://img.shields.io/badge/version-10.0.13--noble--v1-2E7D32)
+![Version](https://img.shields.io/badge/version-10.0.14--noble--v1-2E7D32)
 ![Base](https://img.shields.io/badge/base-dotnet%2Faspnet%3A10.0--noble-555555?logo=docker&logoColor=white)
 ![Platforms](https://img.shields.io/badge/platforms-linux%2Famd64%20%7C%20linux%2Farm64-607D8B)
 ![Repository code license](https://img.shields.io/badge/repository_code-MIT-1565C0)
@@ -18,7 +18,7 @@ Imagem base do ASP.NET Core 10 em Ubuntu 24.04 para executar aplicações framew
 
 | Item | Valor |
 | --- | --- |
-| Imagem | `lzocateli/dotnet-aspnet:10.0.13-noble-v1` |
+| Imagem | `lzocateli/dotnet-aspnet:10.0.14-noble-v1` |
 | Imagem base | Digest do manifest multi-arquitetura de `mcr.microsoft.com/dotnet/aspnet:10.0-noble` |
 | Plataformas | `linux/amd64`, `linux/arm64` |
 | Usuário padrão | `1654:1654` (`APP_UID` da imagem oficial) |
@@ -33,8 +33,8 @@ Imagem base do ASP.NET Core 10 em Ubuntu 24.04 para executar aplicações framew
 
 ### Incluído
 
-- Microsoft.AspNetCore.App 10.0.13;
-- Microsoft.NETCore.App 10.0.13;
+- Microsoft.AspNetCore.App 10.0.14;
+- Microsoft.NETCore.App 10.0.14;
 - bibliotecas do Ubuntu Noble presentes na imagem oficial;
 - diretório `/app` gravável pelo usuário não root.
 
@@ -49,8 +49,8 @@ Imagem base do ASP.NET Core 10 em Ubuntu 24.04 para executar aplicações framew
 ## Início rápido
 
 ```bash
-docker pull lzocateli/dotnet-aspnet:10.0.13-noble-v1
-docker run --rm lzocateli/dotnet-aspnet:10.0.13-noble-v1
+docker pull lzocateli/dotnet-aspnet:10.0.14-noble-v1
+docker run --rm lzocateli/dotnet-aspnet:10.0.14-noble-v1
 ```
 
 Para executar uma aplicação publicada em `./out`:
@@ -59,7 +59,7 @@ Para executar uma aplicação publicada em `./out`:
 docker run --rm \
   --publish 127.0.0.1:8080:8080 \
   --volume "$PWD/out:/app:ro" \
-  lzocateli/dotnet-aspnet:10.0.13-noble-v1 \
+  lzocateli/dotnet-aspnet:10.0.14-noble-v1 \
   Aplicacao.dll
 ```
 
@@ -75,7 +75,7 @@ COPY --chown=1654:1654 . .
 RUN --mount=type=cache,target=/home/app/.nuget/packages,uid=1654,gid=1654 \
     dotnet publish --configuration Release --output /out
 
-FROM lzocateli/dotnet-aspnet:10.0.13-noble-v1 AS runtime
+FROM lzocateli/dotnet-aspnet:10.0.14-noble-v1 AS runtime
 COPY --from=build --chown=1654:1654 /out .
 CMD ["Aplicacao.dll"]
 ```
@@ -144,7 +144,7 @@ Defina o health check na imagem da aplicação ou no orquestrador usando uma rot
 ## Build local
 
 ```bash
-docker build --pull --tag lzocateli/dotnet-aspnet:10.0.13-noble-v1 dotnet-aspnet
+docker build --pull --tag lzocateli/dotnet-aspnet:10.0.14-noble-v1 dotnet-aspnet
 ```
 
 Para múltiplas plataformas:
@@ -152,7 +152,7 @@ Para múltiplas plataformas:
 ```bash
 docker buildx build \
   --platform linux/amd64,linux/arm64 \
-  --tag lzocateli/dotnet-aspnet:10.0.13-noble-v1 \
+  --tag lzocateli/dotnet-aspnet:10.0.14-noble-v1 \
   dotnet-aspnet
 ```
 
@@ -160,7 +160,8 @@ docker buildx build \
 
 | Tag | Mutabilidade | Compatibilidade | Uso recomendado |
 | --- | --- | --- | --- |
-| `10.0.13-noble-v1` | Imutável | ASP.NET Core 10.0.13 em Ubuntu 24.04 | Runtime produtivo framework-dependent |
+| `10.0.14-noble-v1` | Imutável | ASP.NET Core 10.0.14 em Ubuntu 24.04 | Runtime produtivo framework-dependent |
+| `10.0.13-noble-v1` | Imutável | ASP.NET Core 10.0.13 em Ubuntu 24.04 | Substituir: afetada por GHSA-p3jp-9v83-76w9 (HIGH, Microsoft.NETCore.App.Runtime) |
 | `10.0.11-noble` | Imutável | ASP.NET Core 10.0.11 em Ubuntu 24.04 | Substituir: afetada por CVE-2026-70188 e CVE-2026-88092 |
 
 Não há política para `latest`. Uma atualização do runtime, da base ou do contrato exige nova tag imutável, rebuild da aplicação e validação antes do rollout.
@@ -171,9 +172,9 @@ Antes da publicação, execute:
 
 ```bash
 docker buildx build --check --file dotnet-aspnet/Dockerfile dotnet-aspnet
-docker build --pull --tag lzocateli/dotnet-aspnet:10.0.13-noble-v1 dotnet-aspnet
-docker run --rm lzocateli/dotnet-aspnet:10.0.13-noble-v1
-docker inspect lzocateli/dotnet-aspnet:10.0.13-noble-v1
+docker build --pull --tag lzocateli/dotnet-aspnet:10.0.14-noble-v1 dotnet-aspnet
+docker run --rm lzocateli/dotnet-aspnet:10.0.14-noble-v1
+docker inspect lzocateli/dotnet-aspnet:10.0.14-noble-v1
 ```
 
 Além do smoke test da base, construa uma aplicação mínima com o SDK correspondente e valide HTTP, sinais, execução não root e filesystem somente leitura. Na release, execute scan de vulnerabilidades e confira SBOM, proveniência, labels e manifests das plataformas.
@@ -184,7 +185,7 @@ Use **Actions > Publicar imagem de container > Run workflow** com:
 
 - `context_path`: `dotnet-aspnet`;
 - `image_name`: `dotnet-aspnet`;
-- `image_tag`: `10.0.13-noble-v1`;
+- `image_tag`: `10.0.14-noble-v1`;
 - `dockerfile`: `Dockerfile`;
 - `platforms`: `linux/amd64,linux/arm64`.
 
@@ -205,20 +206,21 @@ Atualize reconstruindo a aplicação sobre uma nova tag imutável; faça rollout
 - A imagem é uma base de runtime; não é um serviço útil sem uma aplicação ASP.NET Core publicada.
 - Não inclui utilitários para health check. Use probes nativas do orquestrador ou adicione uma ferramenta mínima na imagem derivada quando indispensável.
 - A variante Ubuntu Noble prioriza compatibilidade e é maior que variantes chiseled.
-- Em 2026-10-14, o Trivy 0.72.0 não encontrou vulnerabilidades corrigíveis `CRITICAL`, `HIGH` ou `MEDIUM` na imagem local `linux/amd64` (Ubuntu 24.04, Microsoft.AspNetCore.App e Microsoft.NETCore.App 10.0.13); repita o scan sobre o digest publicado antes do rollout.
+- Em 2026-11-04, o Trivy 0.72.0 não encontrou vulnerabilidades corrigíveis `CRITICAL` ou `HIGH` na imagem local `linux/amd64` (Ubuntu 24.04, Microsoft.AspNetCore.App e Microsoft.NETCore.App 10.0.14); repita o scan sobre o digest publicado antes do rollout.
 
 ## Licenças e fontes
 
 | Componente | Versão | Licença | Fonte |
 | --- | --- | --- | --- |
 | Conteúdo original deste repositório | Atual | MIT | `https://github.com/lzocateli/containers` |
-| Imagem oficial ASP.NET Core | 10.0.13 / Ubuntu Noble | MIT e licenças dos componentes distribuídos | `https://github.com/dotnet/dotnet-docker` |
+| Imagem oficial ASP.NET Core | 10.0.14 / Ubuntu Noble | MIT e licenças dos componentes distribuídos | `https://github.com/dotnet/dotnet-docker` |
 | Ubuntu | 24.04 Noble | Licenças próprias dos pacotes distribuídos | `https://packages.ubuntu.com/noble/` |
 
 O badge MIT descreve somente o conteúdo original deste repositório. A imagem inclui componentes de terceiros que permanecem sujeitos aos termos e avisos de suas fontes. Consulte a [política de licenciamento](https://github.com/lzocateli/containers/blob/main/LICENSING.md), preserve as atribuições upstream e verifique também os avisos distribuídos dentro da imagem.
 
 ## Histórico de alterações
 
+- `10.0.14-noble-v1`: atualização para ASP.NET Core 10.0.14, que corrige GHSA-p3jp-9v83-76w9 (HIGH, Microsoft.NETCore.App.Runtime).
 - `10.0.13-noble-v1`: atualização para ASP.NET Core 10.0.13, que corrige CVE-2026-70188 e CVE-2026-88092 (críticas, ASP.NET Core); primeira tag no formato `<versao-upstream>-vN`.
 - `10.0.11-noble`: atualização para ASP.NET Core 10.0.11 com imagem base oficial fixada por digest.
 - `10.0.10-noble`: migração para ASP.NET Core 10, execução não root, porta 8080 e metadados OCI.
