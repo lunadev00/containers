@@ -64,7 +64,7 @@ user="$("$ENGINE" image inspect --format '{{.Config.User}}' "$image_ref")"
 
 "$ENGINE" run --rm "$image_ref" bash -c '
 set -e
-npx playwright --version | grep -q "1\.65\.0"
+playwright --version | grep -q "1\.65\.0"
 google-chrome --version
 microsoft-edge --version
 "$BRAVE_EXECUTABLE" --version

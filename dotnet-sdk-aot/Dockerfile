@@ -1,7 +1,8 @@
 # syntax=docker/dockerfile:1
 
 # Imagem oficial do .NET 10 SDK com os pré-requisitos de Native AOT (clang, lld e zlib).
-FROM mcr.microsoft.com/dotnet/sdk:10.0.403-noble-aot@sha256:e5b1f5150f66079aa409eec64042a13de475530864825bf85d575188d3c8d3f9 AS runtime
+# mcr.microsoft.com/dotnet/sdk:10.0.403-noble-aot
+FROM mcr.microsoft.com/dotnet/sdk@sha256:e5b1f5150f66079aa409eec64042a13de475530864825bf85d575188d3c8d3f9 AS runtime
 
 ARG IMAGE_VERSION="10.0.403-noble-aot-v1"
 

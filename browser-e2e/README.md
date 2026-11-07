@@ -22,7 +22,7 @@ Executa testes E2E em Node.js 24 LTS: Playwright com Chrome, Edge e Brave estáv
 | Imagem base | `lzocateli/node:24.22.1-bookworm-v1` (fixada por digest) |
 | Plataformas | `linux/amd64` |
 | Usuário padrão | `node` (`1000:1000`) |
-| Entry point | nenhum; `CMD ["npx", "playwright", "--version"]` |
+| Entry point | nenhum; `CMD ["playwright", "--version"]` |
 | Diretório de trabalho | `/workspace` |
 | Código-fonte | `https://github.com/lzocateli/containers/tree/main/browser-e2e` |
 | Documentação | `https://github.com/lzocateli/containers/tree/main/browser-e2e` |

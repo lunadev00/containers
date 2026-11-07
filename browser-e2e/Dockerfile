@@ -25,11 +25,11 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update \
 	&& apt-get install --yes --no-install-recommends ca-certificates curl gnupg xvfb \
 	&& install --directory --mode=0755 /etc/apt/keyrings \
-	&& curl -fsSL https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg \
+	&& curl --proto '=https' --tlsv1.2 -fsSL https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg \
 		--output /etc/apt/keyrings/brave-browser-archive-keyring.gpg \
 	&& echo "deb [signed-by=/etc/apt/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main" \
 		> /etc/apt/sources.list.d/brave-browser-release.list \
-	&& curl -fsSL https://packages.mozilla.org/apt/repo-signing-key.gpg \
+	&& curl --proto '=https' --tlsv1.2 -fsSL https://packages.mozilla.org/apt/repo-signing-key.gpg \
 		| gpg --dearmor --output /etc/apt/keyrings/packages.mozilla.org.gpg \
 	&& echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.gpg] https://packages.mozilla.org/apt mozilla main" \
 		> /etc/apt/sources.list.d/mozilla.list \
@@ -38,17 +38,19 @@ RUN apt-get update \
 	&& apt-get install --yes --no-install-recommends brave-browser firefox firefox-esr \
 	&& rm -rf /var/lib/apt/lists/*
 
-# Playwright instala Chrome e Edge estáveis (canais de marca) e as dependências de sistema.
-ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
-RUN npm install --global "playwright@${PLAYWRIGHT_VERSION}" "@playwright/test@${PLAYWRIGHT_VERSION}" \
-		"selenium-webdriver@${SELENIUM_WEBDRIVER_VERSION}" \
-	&& npx --yes "playwright@${PLAYWRIGHT_VERSION}" install --with-deps chrome msedge \
-	&& npm cache clean --force \
-	&& rm -rf /var/lib/apt/lists/*
+# O BuildKit confere o SHA-256 do geckodriver antes de usar o arquivo.
+ADD --checksum=sha256:${GECKODRIVER_SHA256} \
+	"https://github.com/mozilla/geckodriver/releases/download/v${GECKODRIVER_VERSION}/geckodriver-v${GECKODRIVER_VERSION}-linux64.tar.gz" \
+	/tmp/geckodriver.tar.gz
 
-RUN curl -fsSL --output /tmp/geckodriver.tar.gz \
-		"https://github.com/mozilla/geckodriver/releases/download/v${GECKODRIVER_VERSION}/geckodriver-v${GECKODRIVER_VERSION}-linux64.tar.gz" \
-	&& echo "${GECKODRIVER_SHA256}  /tmp/geckodriver.tar.gz" | sha256sum --check --strict - \
+# Pacotes npm sem scripts de ciclo de vida; o Playwright instala Chrome e Edge estáveis
+# (canais de marca) e as dependências de sistema pelo binário já instalado, sem npx.
+ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+RUN npm install --global --ignore-scripts "playwright@${PLAYWRIGHT_VERSION}" "@playwright/test@${PLAYWRIGHT_VERSION}" \
+		"selenium-webdriver@${SELENIUM_WEBDRIVER_VERSION}" \
+	&& playwright install --with-deps chrome msedge \
+	&& npm cache clean --force \
+	&& rm -rf /var/lib/apt/lists/* \
 	&& tar --extract --gzip --file /tmp/geckodriver.tar.gz --directory /usr/local/bin geckodriver \
 	&& rm /tmp/geckodriver.tar.gz \
 	&& install --directory --owner=node --group=node /workspace
@@ -62,4 +64,4 @@ WORKDIR /workspace
 
 USER node:node
 
-CMD ["npx", "playwright", "--version"]
+CMD ["playwright", "--version"]

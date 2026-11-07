@@ -1,7 +1,8 @@
 # syntax=docker/dockerfile:1
 
 # Prometheus 3.13 é a linha LTS vigente; a imagem expõe somente o promtool.
-FROM prom/prometheus:v3.13.5@sha256:aafa9d694e6a883c02db516d9f6e5b84e14195f49a2a6456a4cca815edda72b9 AS runtime
+# prom/prometheus:v3.13.5
+FROM prom/prometheus@sha256:aafa9d694e6a883c02db516d9f6e5b84e14195f49a2a6456a4cca815edda72b9 AS runtime
 
 ARG IMAGE_VERSION="3.13.5-v1"
 
