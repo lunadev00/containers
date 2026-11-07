@@ -33,7 +33,7 @@ Executa testes E2E em Node.js 24 LTS: Playwright com Chrome, Edge e Brave estáv
 
 - Node.js 24.22.1 (LTS), da imagem base.
 - `playwright` e `@playwright/test` 1.65.0, instalados globalmente.
-- Google Chrome e Microsoft Edge estáveis, instalados pelo Playwright.
+- Chromium do Playwright (Chrome for Testing), além de Google Chrome e Microsoft Edge estáveis, instalados pelo Playwright.
 - Brave estável, do repositório oficial da Brave.
 - Firefox estável e Firefox ESR, do repositório oficial da Mozilla.
 - `selenium-webdriver` 4.52.0 e geckodriver 0.37.1 (com SHA-256 verificado).
@@ -42,7 +42,7 @@ Executa testes E2E em Node.js 24 LTS: Playwright com Chrome, Edge e Brave estáv
 ### Não incluído
 
 - Os testes do projeto consumidor, que são montados em `/workspace`.
-- WebKit e Chromium sem marca do Playwright.
+- WebKit do Playwright.
 - `linux/arm64`, porque o Edge não é distribuído para essa arquitetura no Linux.
 
 ## Início rápido
@@ -73,6 +73,18 @@ services:
       - ./frontend:/workspace
     command: ["npx", "playwright", "test"]
 ```
+
+## Testes de extensão
+
+Resultado verificado pelo smoke test (`scripts/probe-extensions.js`), que carrega uma extensão MV3 por `--load-extension`:
+
+| Navegador | Carrega extensão por linha de comando | Uso recomendado |
+| --- | --- | --- |
+| Chromium (Chrome for Testing) | Sim | Extensões em Playwright (`channel: "chromium"`) |
+| Microsoft Edge | Sim | Extensões em Playwright (`channel: "msedge"`) |
+| Brave | Sim | Extensões em Playwright (`executablePath: process.env.BRAVE_EXECUTABLE`) |
+| Google Chrome estável | Não, desde a versão 137 | Páginas comuns; extensões só por outra via, como o WebDriver BiDi |
+| Firefox estável e ESR | Não se aplica | Extensões via Selenium e `webExtension.install` do WebDriver BiDi |
 
 ## Configuração
 
@@ -134,7 +146,7 @@ Antes da publicação, confirme:
 
 - `.gitignore` e `.dockerignore` presentes;
 - análise do Dockerfile com BuildKit;
-- `bash browser-e2e/scripts/smoke-test.sh --image <ref>`, que verifica o usuário não root, a presença das versões, o Firefox ESR e o geckodriver, e a abertura de Chrome, Edge e Brave pelo Playwright;
+- `bash browser-e2e/scripts/smoke-test.sh --image <ref>`, que verifica o usuário não root, a presença das versões, o Firefox ESR e o geckodriver, a abertura de Chrome, Edge e Brave pelo Playwright e o carregamento de uma extensão MV3 no Chromium, no Edge e no Brave;
 - inspeção de vulnerabilidades com `tools/scripts/scan-container-vulnerabilities.ps1 -ContextPath browser-e2e`;
 - SBOM e proveniência na publicação.
 
@@ -157,7 +169,7 @@ Reconstrua periodicamente para receber correções de segurança dos navegadores
 | Sintoma | Causa provável | Verificação | Correção |
 | --- | --- | --- | --- |
 | Chrome fecha ao iniciar | `/dev/shm` pequeno | Logs do Playwright | Use `--ipc=host` ou `--shm-size=1g` |
-| Extensão não carrega no Chrome | Modo headless sem suporte a extensões | Opções de `launchPersistentContext` | Use `--headless=new` ou `xvfb-run` |
+| Extensão não carrega no Chrome | O Chrome de marca ignora `--load-extension` desde a versão 137 | `node scripts/probe-extensions.js --extension <dir>` | Use `channel: "chromium"` (Chrome for Testing) ou Edge |
 | Selenium não encontra o Firefox | Binário não informado | `echo $FIREFOX_ESR_EXECUTABLE` | Defina `binary` nas opções do Firefox |
 
 ## Limitações conhecidas
@@ -172,6 +184,7 @@ Reconstrua periodicamente para receber correções de segurança dos navegadores
 | Conteúdo original deste repositório | Atual | MIT | `https://github.com/lzocateli/containers` |
 | Imagem base `lzocateli/node` | 24.22.1-bookworm-v1 | MIT e licenças upstream | `https://github.com/lzocateli/containers/tree/main/node` |
 | Playwright | 1.65.0 | Apache-2.0 | `https://github.com/microsoft/playwright` |
+| Chromium (Chrome for Testing) | da versão do Playwright | BSD-3-Clause e licenças do Chromium | `https://googlechromelabs.github.io/chrome-for-testing/` |
 | selenium-webdriver | 4.52.0 | Apache-2.0 | `https://github.com/SeleniumHQ/selenium` |
 | geckodriver | 0.37.1 | MPL-2.0 | `https://github.com/mozilla/geckodriver` |
 | Firefox e Firefox ESR | estável e ESR no build | MPL-2.0 | `https://www.mozilla.org/firefox/` |

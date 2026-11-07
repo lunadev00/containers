@@ -87,4 +87,19 @@ const { chromium } = require("playwright");
   await brave.close();
 })().catch((e) => { console.error(e); process.exit(1); });' || fail "Playwright nao abriu Chrome, Edge ou Brave"
 
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+if command -v wslpath >/dev/null 2>&1; then
+  mount_dir="$(wslpath -w "$script_dir")"
+elif command -v cygpath >/dev/null 2>&1; then
+  mount_dir="$(cygpath -w "$script_dir")"
+else
+  mount_dir="$script_dir"
+fi
+
+# Chromium (Chrome for Testing), Edge e Brave precisam carregar extensao MV3 por linha de comando;
+# o Chrome de marca deixou de aceitar --load-extension na versao 137 e e apenas informativo.
+"$ENGINE" run --rm --ipc=host --volume "$mount_dir:/probe:ro" "$image_ref" \
+  node /probe/probe-extensions.js --extension /probe/fixtures/mv3-extension --require chromium,msedge,brave \
+  || fail "Chromium, Edge ou Brave nao carregou a extensao MV3"
+
 echo "Smoke test concluido: $image_ref"

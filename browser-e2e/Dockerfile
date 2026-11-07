@@ -43,12 +43,14 @@ ADD --checksum=sha256:${GECKODRIVER_SHA256} \
 	"https://github.com/mozilla/geckodriver/releases/download/v${GECKODRIVER_VERSION}/geckodriver-v${GECKODRIVER_VERSION}-linux64.tar.gz" \
 	/tmp/geckodriver.tar.gz
 
-# Pacotes npm sem scripts de ciclo de vida; o Playwright instala Chrome e Edge estáveis
-# (canais de marca) e as dependências de sistema pelo binário já instalado, sem npx.
+# Pacotes npm sem scripts de ciclo de vida; o Playwright instala, pelo binário já instalado e sem
+# npx, o Chromium (Chrome for Testing), Chrome e Edge estáveis e as dependências de sistema.
+# O Chrome de marca não carrega extensões por linha de comando desde a versão 137; testes de
+# extensão usam o Chromium.
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 RUN npm install --global --ignore-scripts "playwright@${PLAYWRIGHT_VERSION}" "@playwright/test@${PLAYWRIGHT_VERSION}" \
 		"selenium-webdriver@${SELENIUM_WEBDRIVER_VERSION}" \
-	&& playwright install --with-deps chrome msedge \
+	&& playwright install --with-deps chromium chrome msedge \
 	&& npm cache clean --force \
 	&& rm -rf /var/lib/apt/lists/* \
 	&& tar --extract --gzip --file /tmp/geckodriver.tar.gz --directory /usr/local/bin geckodriver \
