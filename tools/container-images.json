@@ -333,6 +333,16 @@
       "scanPlatform": "linux/amd64",
       "validation": "build",
       "smokeTest": "scripts/smoke-test.sh"
+    },
+    {
+      "id": "rust",
+      "imageName": "rust",
+      "context": "rust",
+      "dockerfile": "Dockerfile",
+      "platforms": ["linux/amd64"],
+      "scanPlatform": "linux/amd64",
+      "validation": "build",
+      "smokeTest": "scripts/smoke-test.sh"
     }
   ]
 }
