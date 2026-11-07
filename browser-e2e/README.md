@@ -76,7 +76,7 @@ services:
 
 ## Testes de extensão
 
-Resultado verificado pelo smoke test (`scripts/probe-extensions.js`), que carrega uma extensão MV3 por `--load-extension`:
+Resultado verificado pelo smoke test (`scripts/probe-extensions.mjs`), que carrega uma extensão MV3 por `--load-extension`:
 
 | Navegador | Carrega extensão por linha de comando | Uso recomendado |
 | --- | --- | --- |
@@ -169,7 +169,7 @@ Reconstrua periodicamente para receber correções de segurança dos navegadores
 | Sintoma | Causa provável | Verificação | Correção |
 | --- | --- | --- | --- |
 | Chrome fecha ao iniciar | `/dev/shm` pequeno | Logs do Playwright | Use `--ipc=host` ou `--shm-size=1g` |
-| Extensão não carrega no Chrome | O Chrome de marca ignora `--load-extension` desde a versão 137 | `node scripts/probe-extensions.js --extension <dir>` | Use `channel: "chromium"` (Chrome for Testing) ou Edge |
+| Extensão não carrega no Chrome | O Chrome de marca ignora `--load-extension` desde a versão 137 | `node scripts/probe-extensions.mjs --extension <dir>` | Use `channel: "chromium"` (Chrome for Testing) ou Edge |
 | Selenium não encontra o Firefox | Binário não informado | `echo $FIREFOX_ESR_EXECUTABLE` | Defina `binary` nas opções do Firefox |
 
 ## Limitações conhecidas

@@ -99,7 +99,7 @@ fi
 # Chromium (Chrome for Testing), Edge e Brave precisam carregar extensao MV3 por linha de comando;
 # o Chrome de marca deixou de aceitar --load-extension na versao 137 e e apenas informativo.
 "$ENGINE" run --rm --ipc=host --volume "$mount_dir:/probe:ro" "$image_ref" \
-  node /probe/probe-extensions.js --extension /probe/fixtures/mv3-extension --require chromium,msedge,brave \
+  node /probe/probe-extensions.mjs --extension /probe/fixtures/mv3-extension --require chromium,msedge,brave \
   || fail "Chromium, Edge ou Brave nao carregou a extensao MV3"
 
 echo "Smoke test concluido: $image_ref"
