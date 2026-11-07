@@ -323,6 +323,16 @@
       "scanPlatform": "linux/amd64",
       "validation": "check",
       "reason": "Espelho de imagem upstream sem customização relevante."
+    },
+    {
+      "id": "dotnet-sdk-aot",
+      "imageName": "dotnet-sdk-aot",
+      "context": "dotnet-sdk-aot",
+      "dockerfile": "Dockerfile",
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "scanPlatform": "linux/amd64",
+      "validation": "build",
+      "smokeTest": "scripts/smoke-test.sh"
     }
   ]
 }
