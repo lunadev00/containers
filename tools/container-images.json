@@ -353,6 +353,16 @@
       "scanPlatform": "linux/amd64",
       "validation": "build",
       "smokeTest": "scripts/smoke-test.sh"
+    },
+    {
+      "id": "promtool",
+      "imageName": "promtool",
+      "context": "promtool",
+      "dockerfile": "Dockerfile",
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "scanPlatform": "linux/amd64",
+      "validation": "build",
+      "smokeTest": "scripts/smoke-test.sh"
     }
   ]
 }

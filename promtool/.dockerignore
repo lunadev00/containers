@@ -1,0 +1,53 @@
+# Controle de versão e automação
+.git
+.gitignore
+.github
+
+# Configuração local, secrets e credenciais
+.env
+.env.*
+secrets/
+credentials/
+*.key
+*.pem
+*.p12
+*.pfx
+
+# Dados persistentes e backups
+data/
+backups/
+backup/
+*.bak
+*.dump
+*.sql.gz
+
+# Logs, temporários e caches
+logs/
+*.log
+.cache/
+tmp/
+temp/
+
+# Artefatos locais comuns
+coverage/
+node_modules/
+bin/
+obj/
+__pycache__/
+*.py[cod]
+
+# Documentação e configuração de execução local
+README.md
+readme.md
+compose*.yml
+compose*.yaml
+docker-compose*.yml
+docker-compose*.yaml
+
+# Editores e sistema operacional
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Adicione abaixo exclusões específicas desta imagem sem remover arquivos necessários ao build.
