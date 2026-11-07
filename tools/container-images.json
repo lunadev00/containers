@@ -343,6 +343,16 @@
       "scanPlatform": "linux/amd64",
       "validation": "build",
       "smokeTest": "scripts/smoke-test.sh"
+    },
+    {
+      "id": "browser-e2e",
+      "imageName": "browser-e2e",
+      "context": "browser-e2e",
+      "dockerfile": "Dockerfile",
+      "platforms": ["linux/amd64"],
+      "scanPlatform": "linux/amd64",
+      "validation": "build",
+      "smokeTest": "scripts/smoke-test.sh"
     }
   ]
 }
