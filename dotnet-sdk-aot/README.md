@@ -131,7 +131,7 @@ Antes da publicação, confirme:
 
 - `.gitignore` e `.dockerignore` presentes;
 - análise do Dockerfile com BuildKit;
-- `bash dotnet-sdk-aot/scripts/smoke-test.sh --image <ref>`, que verifica o usuário não root, a versão do SDK e a publicação AOT de um console executado em seguida;
+- `bash dotnet-sdk-aot/scripts/smoke-test.sh --image <ref>`, que verifica o usuário não root, a versão do SDK e a publicação AOT de um console executado em seguida, selecionando `linux-x64` para AMD64 ou `linux-arm64` para ARM64 conforme a arquitetura da imagem;
 - inspeção de vulnerabilidades com `tools/scripts/scan-container-vulnerabilities.ps1 -ContextPath dotnet-sdk-aot`;
 - SBOM e proveniência na publicação.
 
@@ -155,6 +155,7 @@ Atualize junto com `lzocateli/dotnet-sdk` a cada patch do .NET 10, para manter o
 | --- | --- | --- | --- |
 | `Permission denied` ao gravar `obj/` | Diretório montado sem escrita para o UID 1654 | `ls -ln` no host | Ajuste o dono ou use `--user` compatível |
 | Erro de linker para `win-x64`/`osx-*` | Native AOT não cruza sistemas operacionais | Conferir o `--runtime` | Publique no runner do sistema alvo |
+| Smoke test AOT falha em ARM64 | Runtime incompatível ou erro de compilação | Consulte a saída de `dotnet publish` no job | Use o script atualizado, que seleciona o runtime pela arquitetura da imagem |
 
 ## Limitações conhecidas
 

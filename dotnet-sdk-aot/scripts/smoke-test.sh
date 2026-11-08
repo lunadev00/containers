@@ -4,6 +4,7 @@ set -Eeuo pipefail
 usage() {
   cat <<'EOF'
 Valida uma imagem .NET SDK Native AOT ja construida.
+Seleciona linux-x64 ou linux-arm64 conforme a arquitetura da imagem.
 
 Dependencias:
   Bash 4.4+ e Docker 24+ (ou Podman 4+) com acesso ao daemon.
@@ -62,15 +63,22 @@ fi
 user="$("$ENGINE" image inspect --format '{{.Config.User}}' "$image_ref")"
 [[ -n "$user" && "$user" != "root" && "$user" != "0" && "$user" != 0:* ]] || fail "imagem executa como root: '$user'"
 
+platform="$("$ENGINE" image inspect --format '{{.Os}}/{{.Architecture}}' "$image_ref")"
+case "$platform" in
+  linux/amd64) aot_runtime=linux-x64 ;;
+  linux/arm64) aot_runtime=linux-arm64 ;;
+  *) fail "plataforma nao suportada para Native AOT: $platform" ;;
+esac
+
 version_output="$("$ENGINE" run --rm "$image_ref" dotnet --version)"
 [[ "$version_output" == 10.0.* ]] || fail "SDK inesperado: $version_output"
 
-"$ENGINE" run --rm --tmpfs /tmp:exec "$image_ref" bash -c '
+"$ENGINE" run --rm --tmpfs /tmp:exec --env "AOT_RUNTIME=$aot_runtime" "$image_ref" bash -c '
 set -e
 cd /tmp
-dotnet new console --output aot --name aot >/dev/null
+dotnet new console --output aot --name aot
 cd aot
-dotnet publish --configuration Release --runtime linux-x64 -p:PublishAot=true --output out >/dev/null
-test "$(./out/aot)" = "Hello, World!"' || fail "publicacao Native AOT falhou"
+dotnet publish --configuration Release --runtime "$AOT_RUNTIME" -p:PublishAot=true --output out
+test "$(./out/aot)" = "Hello, World!"' || fail "publicacao Native AOT falhou para $aot_runtime"
 
 echo "Smoke test concluido: $image_ref"
